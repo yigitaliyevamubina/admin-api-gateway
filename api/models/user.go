@@ -45,16 +45,16 @@ type LoginRespModel struct {
 func (r *User) Validate() error {
 	return validation.ValidateStruct(
 		r,
-		validation.Field(&r.FirstName, validation.Required, validation.Length(3, 50), validation.Match(regexp.MustCompile("^[A-Z][a-z]*$")).Error("should start with a capital letter and should only contain letters")),
-		validation.Field(&r.LastName, validation.Required, validation.Length(3, 50), validation.Match(regexp.MustCompile("^[A-Z][a-z]*$")).Error("should start with a capital letter and should only contain letters")),
+		validation.Field(&r.FirstName, validation.Required, validation.Length(3, 50), validation.Match(regexp.MustCompile(`^[A-Z][a-z]*$`)).Error(`should start with a capital letter and should only contain letters`)),
+		validation.Field(&r.LastName, validation.Required, validation.Length(3, 50), validation.Match(regexp.MustCompile(`^[A-Z][a-z]*$`)).Error(`should start with a capital letter and should only contain letters`)),
 		validation.Field(&r.Email, validation.Required, validation.Length(5, 100), is.Email),
 		validation.Field(&r.Password,
 			validation.Required,
 			validation.Length(5, 30),
-			validation.Match(regexp.MustCompile("\\d")).Error("should contain at least one digit"),
-			validation.Match(regexp.MustCompile("^[a-zA-Z\\d]+$")).Error("should only contain letters (either lowercase or uppercase) and digits"),
+			validation.Match(regexp.MustCompile(`\\d`)).Error(`should contain at least one digit`),
+			validation.Match(regexp.MustCompile(`^[a-zA-Z\\d]+$`)).Error(`should only contain letters (either lowercase or uppercase) and digits`),
 		),
-		validation.Field(&r.BirthDate, validation.Required, validation.Match(regexp.MustCompile("^\\d{4}-\\d{2}-\\d{2}$")).Error("should be in the format 'yyyy-mm-dd'")),
+		validation.Field(&r.BirthDate, validation.Required, validation.Match(regexp.MustCompile(`^\\d{4}-\\d{2}-\\d{2}$`)).Error(`should be in the format 'yyyy-mm-dd'`)),
 	)
 }
 
