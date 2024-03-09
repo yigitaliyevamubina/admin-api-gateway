@@ -107,6 +107,20 @@ func New(option Option) *gin.Engine {
 	api.POST("/user/password", handlerV1.ChangePassword)        //user
 	api.POST("/user/refresh", handlerV1.UpdateRefreshToken)     //user
 
+	//Doctor
+	api.POST("/doctor/create", handlerV1.CreateDoctor)       //admin
+	api.GET("/doctor/:id", handlerV1.GetDoctorById)          //doctor
+	api.PUT("/doctor/update/:id", handlerV1.UpdateDoctor)    //doctor
+	api.DELETE("/doctor/delete/:id", handlerV1.DeleteDoctor) //doctor
+	api.GET("/doctors/:page/:limit", handlerV1.ListDoctors)  //user
+
+	//Department
+	api.POST("/department/create", handlerV1.CreateDepartment)       //admin
+	api.GET("/department/:id", handlerV1.GetDepartmentById)          //user
+	api.PUT("/department/update/:id", handlerV1.UpdateDepartment)    //admin
+	api.DELETE("/department/delete/:id", handlerV1.DeleteDepartment) //admin
+	api.GET("/departments/:page/:limit", handlerV1.ListDepartments)  //user
+
 	url := ginSwagger.URL("swagger/doc.json")
 	api.GET("swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler, url))
 

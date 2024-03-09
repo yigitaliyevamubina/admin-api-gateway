@@ -11,7 +11,7 @@ swag-gen:
 	~/go/bin/swag init -g ./api/router.go -o api/docs
 
 g:
-	go run cmd/main.go
+	go run cmd/main.	go
 
 migrate-up:
 	migrate -path migrations -database "$(DB_URL)" -verbose up

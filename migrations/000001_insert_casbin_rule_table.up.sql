@@ -14,6 +14,16 @@ INSERT INTO casbin_rule (ptype, v0, v1, v2) VALUES ('p', 'user', '/v1/user/{id}'
 INSERT INTO casbin_rule (ptype, v0, v1, v2) VALUES ('p', 'user', '/v1/user/password', 'POST');
 
 INSERT INTO casbin_rule (ptype, v0, v1, v2) VALUES ('p', 'user', '/v1/user/refresh', 'POST');
+INSERT INTO casbin_rule (ptype, v0, v1, v2) VALUES ('p', 'user', '/v1/doctors/{page}/{limit}', 'GET');
+INSERT INTO casbin_rule (ptype, v0, v1, v2) VALUES ('p', 'user', '/v1/doctors/{page}/{limit}', 'GET');
+
+-- Insert rules for doctors
+INSERT INTO casbin_rule (ptype, v0, v1, v2) VALUES ('g', 'doctor', 'unauthorized', '*');
+INSERT INTO casbin_rule (ptype, v0, v1, v2) VALUES ('p', 'doctor', '/v1/doctor/{id}', 'GET');
+INSERT INTO casbin_rule (ptype, v0, v1, v2) VALUES ('p', 'doctor', '/v1/doctor/update/{id}', 'PUT');
+INSERT INTO casbin_rule (ptype, v0, v1, v2) VALUES ('p', 'doctor', '/v1/doctor/delete/{id}', 'DELETE');
+INSERT INTO casbin_rule (ptype, v0, v1, v2) VALUES ('p', 'doctor', '/v1/doctors/{page}/{limit}', 'GET');
+
 
 -- Insert rules for admins
 INSERT INTO casbin_rule (ptype, v0, v1, v2) VALUES ('g', 'admin', 'user', '*');

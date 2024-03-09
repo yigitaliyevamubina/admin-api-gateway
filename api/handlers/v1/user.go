@@ -302,6 +302,13 @@ func (h *handlerV1) CreateUser(c *gin.Context) {
 	defer cancel()
 
 	body.ID = uuid.New().String()
+	h.jwtHandler = tokens.JWTHandler{
+		Sub:       body.ID,
+		Role:      "user",
+		SignInKey: h.cfg.SignInKey,
+		Log:       h.log,
+		TimeOut:   h.cfg.AccessTokenTimeOut,
+	}
 	access, refresh, err := h.jwtHandler.GenerateAuthJWT()
 	if handleInternalServerErrorWithMessage(c, h.log, err, "error while generating access and refresh token") {
 		return
@@ -384,7 +391,7 @@ func (h *handlerV1) GetUserById(c *gin.Context) {
 // @Description Update user
 // @Accept json
 // @Produce json
-// @Param id path string true "id"
+// @Param id path string false "id"
 // @Param UserInfo body models.User true "Update User"
 // @Success 201 {object} models.User
 // @Failure 400 string Error models.ResponseError
@@ -406,6 +413,23 @@ func (h *handlerV1) UpdateUser(c *gin.Context) {
 	defer cancel()
 
 	id := c.Param("id")
+	updateReq := &pbu.User{
+		Id:        id,
+		FirstName: body.FirstName,
+		LastName:  body.LastName,
+		BirthDate: body.BirthDate,
+		Email:     body.Email,
+		Password:  body.Password,
+	}
+	if id == "" {
+		updateReq.Id = body.ID
+	}
+
+	if updateReq.Id == "" {
+		if handleBadRequestErrWithMessage(c, h.log, fmt.Errorf("id is requir"), ErrorBadRequest) {
+			return
+		}
+	}
 
 	respUser, err := h.serviceManager.UserService().UpdateUser(ctx, &pbu.User{
 		Id:        id,

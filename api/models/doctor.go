@@ -8,21 +8,22 @@ import (
 )
 
 type DoctorReq struct {
-	ID            string  `json:"id"`
-	FirstName     string  `json:"first_name"`
-	LastName      string  `json:"last_name"`
-	BirthDate     string  `json:"birth_date"`
-	Gender        string  `json:"gender"`
-	PhoneNumber   string  `json:"phone_number"`
-	Email         string  `json:"email"`
-	Password      string  `json:"password"`
-	Address       string  `json:"address"`
-	Salary        float64 `json:"salary"`
-	Biography     string  `json:"biography"`
-	StartWorkYear string  `json:"start_work_year"`
-	EndWorkYear   string  `json:"end_work_year"`
-	WorkYears     int64   `json:"work_years"`
-	DepartmentId  int64   `json:"department_id"`
+	ID            string   `json:"id"`
+	FirstName     string   `json:"first_name"`
+	LastName      string   `json:"last_name"`
+	BirthDate     string   `json:"birth_date"`
+	Gender        string   `json:"gender"`
+	PhoneNumber   string   `json:"phone_number"`
+	Email         string   `json:"email"`
+	Password      string   `json:"password"`
+	Address       string   `json:"address"`
+	Salary        float64  `json:"salary"`
+	Biography     string   `json:"biography"`
+	StartWorkYear string   `json:"start_work_year"`
+	EndWorkYear   string   `json:"end_work_year"`
+	WorkYears     int64    `json:"work_years"`
+	DepartmentId  int64    `json:"department_id"`
+	SpecIds       []int64 `json:"spec_ids"`
 }
 
 func (d *DoctorReq) Validate() error {
@@ -46,39 +47,65 @@ func (d *DoctorReq) Validate() error {
 }
 
 type DoctorModel struct {
-	ID            string  `json:"id"`
-	FullName      string  `json:"full_name"`
-	BirthDate     string  `json:"birth_date"`
-	Gender        string  `json:"gender"`
-	PhoneNumber   string  `json:"phone_number"`
-	Email         string  `json:"email"`
-	Password      string  `json:"password"`
-	Address       string  `json:"address"`
-	Salary        float64 `json:"salary"`
-	Biography     string  `json:"biography"`
-	StartWorkYear string  `json:"start_work_year"`
-	EndWorkYear   string  `json:"end_work_year"`
-	WorkYears     int64   `json:"work_years"`
-	DepartmentId  int64   `json:"department_id"`
-	AccessToken   string  `json:"access_token"`
-	CreatedAt     string  `json:"created_at"`
-	UpdatedAt     string  `json:"updated_at"`
+	ID            string   `json:"id"`
+	FullName      string   `json:"full_name"`
+	BirthDate     string   `json:"birth_date"`
+	Gender        string   `json:"gender"`
+	PhoneNumber   string   `json:"phone_number"`
+	Email         string   `json:"email"`
+	Password      string   `json:"password"`
+	Address       string   `json:"address"`
+	Salary        float64  `json:"salary"`
+	Biography     string   `json:"biography"`
+	StartWorkYear string   `json:"start_work_year"`
+	EndWorkYear   string   `json:"end_work_year"`
+	WorkYears     int64    `json:"work_years"`
+	DepartmentId  int64    `json:"department_id"`
+	AccessToken   string   `json:"access_token"`
+	SpecIds       []int64 `json:"spec_ids"`
+	CreatedAt     string   `json:"created_at"`
+	UpdatedAt     string   `json:"updated_at"`
 }
 
 type DoctorResp struct {
-	ID            string  `json:"id"`
-	FullName      string  `json:"full_name"`
-	BirthDate     string  `json:"birth_date"`
-	Gender        string  `json:"gender"`
-	PhoneNumber   string  `json:"phone_number"`
-	Email         string  `json:"email"`
-	Address       string  `json:"address"`
-	Salary        float64 `json:"salary"`
-	Biography     string  `json:"biography"`
-	StartWorkYear string  `json:"start_work_year"`
-	EndWorkYear   string  `json:"end_work_year"`
-	WorkYears     int64   `json:"work_years"`
-	DepartmentId  int64   `json:"department_id"`
-	CreatedAt     string  `json:"created_at"`
-	UpdatedAt     string  `json:"updated_at"`
+	ID            string   `json:"id"`
+	FullName      string   `json:"full_name"`
+	BirthDate     string   `json:"birth_date"`
+	Gender        string   `json:"gender"`
+	PhoneNumber   string   `json:"phone_number"`
+	Email         string   `json:"email"`
+	Password      string   `json:"password"`
+	Address       string   `json:"address"`
+	Salary        float64  `json:"salary"`
+	Biography     string   `json:"biography"`
+	StartWorkYear string   `json:"start_work_year"`
+	EndWorkYear   string   `json:"end_work_year"`
+	WorkYears     int64    `json:"work_years"`
+	DepartmentId  int64    `json:"department_id"`
+	SpecIds       []int64 `json:"spec_ids"`
+	CreatedAt     string   `json:"created_at"`
+	UpdatedAt     string   `json:"updated_at"`
+}
+
+type ListReq struct {
+	Page  int64 `json:"page"`
+	Limit int64 `json:"limit"`
+}
+
+type ListDoctors struct {
+	Count   int64         `json:"count"`
+	Doctors []*DoctorResp `json:"doctors"`
+}
+
+type DoctorUpdateReq struct {
+	ID string `json:"id"`
+	FullName      string   `json:"full_name"`
+	BirthDate     string   `json:"birth_date"`
+	Address       string   `json:"address"`
+	Salary        float64  `json:"salary"`
+	Biography     string   `json:"biography"`
+	StartWorkYear string   `json:"start_work_year"`
+	EndWorkYear   string   `json:"end_work_year"`
+	WorkYears     int64    `json:"work_years"`
+	DepartmentId  int64    `json:"department_id"`
 }

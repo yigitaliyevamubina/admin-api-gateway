@@ -111,8 +111,8 @@ func (c *ChangePasswordReq) Validate() error {
 	return validation.ValidateStruct(
 		c,
 		validation.Field(&c.NewPassword, validation.Required, validation.Length(5, 30),
-			validation.Match(regexp.MustCompile("\\d")).Error("should contain at least one digit"),
-			validation.Match(regexp.MustCompile("^[a-zA-Z\\d]+$")).Error("should only contain letters (either lowercase or uppercase) and digits"),
+			validation.Match(regexp.MustCompile(`\\d`)).Error(`should contain at least one digit`),
+			validation.Match(regexp.MustCompile(`^[a-zA-Z\\d]+$`)).Error(`should only contain letters (either lowercase or uppercase) and digits`),
 		),
 	)
 }
