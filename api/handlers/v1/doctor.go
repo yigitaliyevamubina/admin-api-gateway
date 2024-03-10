@@ -314,6 +314,14 @@ func (h *handlerV1) CreateDoctor(c *gin.Context) {
 		return
 	}
 
+	body.ID = uuid.New().String()
+	body.Email = strings.TrimSpace(body.Email)
+	body.Email = strings.ToLower(body.Email)
+	err = body.Validate()
+	if handleBadRequestErrWithMessage(c, h.log, err, ErrorValidationError) {
+		return
+	}
+
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second*time.Duration(h.cfg.CtxTimeout))
 	defer cancel()
 

@@ -37,11 +37,16 @@ func (h *handlerV1) CreateDepartment(c *gin.Context) {
 		return
 	}
 
+	err = body.Validate()
+	if handleBadRequestErrWithMessage(c, h.log, err, ErrorValidationError) {
+		return
+	}
+
 	createReq := &pb.Department{
 		Name:        body.Name,
 		Description: body.Description,
-		ComeTime:    body.ComeTime,
-		FinishTime:  body.FinishTime,
+		ComeTime:    "2000-12-12 " + body.ComeTime + ":00",
+		FinishTime:  "2000-12-12 " + body.FinishTime + ":00",
 		ImageUrl:    body.ImageUrl,
 	}
 
@@ -93,7 +98,7 @@ func (h *handlerV1) GetDepartmentById(c *gin.Context) {
 	defer cancel()
 
 	respDepartment, err := h.serviceManager.HealthCareService().GetDepartmentById(ctx, &pb.GetReqInt{Id: int64(idToInt)})
-	if handleInternalServerErrorWithMessage(c, h.log, err, "error while getting doctor by id") {
+	if handleInternalServerErrorWithMessage(c, h.log, err, "error while getting department by id") {
 		return
 	}
 
@@ -220,7 +225,7 @@ func (h *handlerV1) DeleteDepartment(c *gin.Context) {
 // @Produce json
 // @Param page path string false "page"
 // @Param limit path string false "limit"
-// @Success 201 {object} models.ListDoctors
+// @Success 201 {object} models.ListDepartments
 // @Failure 400 string Error models.ResponseError
 // @Failure 500 string Error models.ResponseError
 func (h *handlerV1) ListDepartments(c *gin.Context) {

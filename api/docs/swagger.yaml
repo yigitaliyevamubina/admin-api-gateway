@@ -247,6 +247,15 @@ definitions:
       count:
         type: integer
     type: object
+  models.ListDepartments:
+    properties:
+      count:
+        type: integer
+      departments:
+        items:
+          $ref: '#/definitions/models.DepartmentResp'
+        type: array
+    type: object
   models.ListDoctors:
     properties:
       count:
@@ -865,7 +874,7 @@ paths:
         "201":
           description: Created
           schema:
-            $ref: '#/definitions/models.ListDoctors'
+            $ref: '#/definitions/models.ListDepartments'
         "400":
           description: Bad Request
           schema:
@@ -1026,8 +1035,6 @@ paths:
           description: Internal Server Error
           schema:
             type: string
-      security:
-      - BearerAuth: []
       summary: register doctor
       tags:
       - Doctor

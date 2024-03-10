@@ -531,7 +531,7 @@ const docTemplate = `{
                     "201": {
                         "description": "Created",
                         "schema": {
-                            "$ref": "#/definitions/models.ListDoctors"
+                            "$ref": "#/definitions/models.ListDepartments"
                         }
                     },
                     "400": {
@@ -691,11 +691,6 @@ const docTemplate = `{
         },
         "/v1/doctor/register": {
             "post": {
-                "security": [
-                    {
-                        "BearerAuth": []
-                    }
-                ],
                 "description": "Register a new doctor with the provided details",
                 "consumes": [
                     "application/json"
@@ -2654,6 +2649,20 @@ const docTemplate = `{
                 },
                 "count": {
                     "type": "integer"
+                }
+            }
+        },
+        "models.ListDepartments": {
+            "type": "object",
+            "properties": {
+                "count": {
+                    "type": "integer"
+                },
+                "departments": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.DepartmentResp"
+                    }
                 }
             }
         },

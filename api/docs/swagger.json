@@ -524,7 +524,7 @@
                     "201": {
                         "description": "Created",
                         "schema": {
-                            "$ref": "#/definitions/models.ListDoctors"
+                            "$ref": "#/definitions/models.ListDepartments"
                         }
                     },
                     "400": {
@@ -684,11 +684,6 @@
         },
         "/v1/doctor/register": {
             "post": {
-                "security": [
-                    {
-                        "BearerAuth": []
-                    }
-                ],
                 "description": "Register a new doctor with the provided details",
                 "consumes": [
                     "application/json"
@@ -2647,6 +2642,20 @@
                 },
                 "count": {
                     "type": "integer"
+                }
+            }
+        },
+        "models.ListDepartments": {
+            "type": "object",
+            "properties": {
+                "count": {
+                    "type": "integer"
+                },
+                "departments": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.DepartmentResp"
+                    }
                 }
             }
         },
