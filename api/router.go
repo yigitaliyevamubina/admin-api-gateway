@@ -80,6 +80,8 @@ func New(option Option) *gin.Engine {
 
 	api := router.Group("/v1")
 
+	router.Static("/media", "./media")                    //unauthorized
+
 	//Rbac
 	api.GET("/rbac/roles", handlerV1.ListRoles)                 //superadmin
 	api.GET("/rbac/policies/:role", handlerV1.ListRolePolicies) //superadmin
@@ -117,6 +119,7 @@ func New(option Option) *gin.Engine {
 	api.DELETE("/doctor/delete/:id", handlerV1.DeleteDoctor)                             //doctor, admin, superadmin
 	api.GET("/doctors/:page/:limit", handlerV1.ListDoctors)                              //user, doctor, operator, admin, superadmin
 	api.GET("/doctors/:page/:limit/:department_id", handlerV1.ListDoctorsByDepartmentId) //user, doctor, operator, admin, superadmin
+	router.POST("/doctor/upload", handlerV1.UploadFile)                                     //unauthorized
 
 	//Department
 	api.POST("/department/create", handlerV1.CreateDepartment)       //admin, superadmin
@@ -124,6 +127,7 @@ func New(option Option) *gin.Engine {
 	api.PUT("/department/update/:id", handlerV1.UpdateDepartment)    //admin, superadmin
 	api.DELETE("/department/delete/:id", handlerV1.DeleteDepartment) //admin, superadmin
 	api.GET("/departments/:page/:limit", handlerV1.ListDepartments)  //user, doctor, operator, admin, superadmin
+	api.POST("/department/upload", handlerV1.UploadDepartmentFile)   //unauthorized
 
 	//Specialization
 	api.POST("/specialization/create", handlerV1.CreateSpecializaion)                                    //admin, superadmin

@@ -6,12 +6,17 @@ import (
 	"myproject/admin-api-gateway/api/models"
 	pb "myproject/admin-api-gateway/genproto/healthcare-service"
 	"net/http"
+	"os"
+	"path/filepath"
 	"strconv"
 	"time"
 
 	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
 	"google.golang.org/protobuf/encoding/protojson"
 )
+
+var FilePath string
 
 // CreateDepartment
 // @Router /v1/department/create [post]
@@ -250,4 +255,49 @@ func (h *handlerV1) ListDepartments(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, response)
+}
+
+// Upload files
+// @Router /v1/department/upload [post]
+// @Summary upload department' images
+// @Tags Department
+// @Description upload department's images
+// @Accept image/png
+// @Produce json
+// @Param file formData file true "file"
+// @Success 201 {object} models.URL
+// @Failure 400 string Error models.ResponseError
+// @Failure 500 string Error models.ResponseError
+func (h *handlerV1) UploadDepartmentFile(c *gin.Context) {
+	file, header, err := c.Request.FormFile("file")
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Bad request"})
+		return
+	}
+	defer file.Close()
+
+	id := uuid.New()
+	fileName := id.String() + filepath.Ext(header.Filename)
+	dst, _ := os.Getwd()
+	uploadPath := filepath.Join(dst, "media", "departments")
+
+	err = os.MkdirAll(uploadPath, os.ModePerm)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create upload directory"})
+		return
+	}
+
+	FilePath = filepath.Join(uploadPath, fileName)
+	err = c.SaveUploadedFile(header, FilePath)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to save file"})
+		return
+	}
+
+	baseURL := "http://" + c.Request.Host
+	fileURL := baseURL + "/media/departments/" + fileName
+
+	c.JSON(http.StatusCreated, models.URL{
+		URL: fileURL,
+	})
 }

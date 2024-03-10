@@ -8,6 +8,8 @@ INSERT INTO casbin_rule (ptype, v0, v1, v2) VALUES ('p', 'unauthorized', '/v1/ve
 INSERT INTO casbin_rule (ptype, v0, v1, v2) VALUES ('p', 'unauthorized', '/v1/login', 'POST');
 INSERT INTO casbin_rule (ptype, v0, v1, v2) VALUES ('p', 'unauthorized', '/v1/auth/login', 'POST');
 INSERT INTO casbin_rule (ptype, v0, v1, v2) VALUES ('p', 'unauthorized', '/v1/swagger/*', 'GET');
+INSERT INTO casbin_rule (ptype, v0, v1, v2) VALUES ('p', 'unauthorized', '/v1/doctor/upload', 'POST');
+INSERT INTO casbin_rule (ptype, v0, v1, v2) VALUES ('p', 'unauthorized', '/v1/department/upload', 'POST');
 
 
 

@@ -38,3 +38,7 @@ type ListDepartments struct {
 	Count       int64             `json:"count"`
 	Departments []*DepartmentResp `json:"departments"`
 }
+
+type URL struct {
+	URL string `json:"url"`
+}

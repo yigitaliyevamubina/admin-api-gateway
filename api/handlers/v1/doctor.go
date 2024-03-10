@@ -9,6 +9,8 @@ import (
 	"myproject/admin-api-gateway/email"
 	"myproject/admin-api-gateway/pkg/etc"
 	"net/http"
+	"os"
+	"path/filepath"
 	"strconv"
 	"strings"
 	"time"
@@ -624,4 +626,48 @@ func (h *handlerV1) ListDoctorsByDepartmentId(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, response)
+}
+
+// Upload files
+// @Router /v1/doctor/upload [post]
+// @Summary upload doctors' files, cerfiticates
+// @Tags Doctor
+// @Description upload doctors' files, cerfiticates
+// @Accept image/png
+// @Produce json
+// @Param file formData file true "file"
+// @Success 201 {object} models.URL
+// @Failure 400 string Error models.ResponseError
+// @Failure 500 string Error models.ResponseError
+func (h *handlerV1) UploadFile(c *gin.Context) {
+	file, header, err := c.Request.FormFile("file")
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Bad request"})
+		return
+	}
+	defer file.Close()
+
+	id := uuid.New()
+	fileName := id.String() + filepath.Ext(header.Filename)
+	dst, _ := os.Getwd()
+	uploadPath := filepath.Join(dst, "media", "doctors")
+
+	err = os.MkdirAll(uploadPath, os.ModePerm)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create upload directory"})
+		return
+	}
+
+	filePath := filepath.Join(uploadPath, fileName)
+	err = c.SaveUploadedFile(header, filePath)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to save file"})
+		return
+	}
+
+	fileURL := "/media/doctors/" + fileName
+	
+	c.JSON(http.StatusCreated, models.URL{
+		URL: fileURL,
+	})
 }

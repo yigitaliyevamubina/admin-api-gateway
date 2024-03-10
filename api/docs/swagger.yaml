@@ -854,6 +854,35 @@ paths:
       summary: update department
       tags:
       - Department
+  /v1/department/upload:
+    post:
+      consumes:
+      - image/png
+      description: upload department's images
+      parameters:
+      - description: file
+        in: formData
+        name: file
+        required: true
+        type: file
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.Status'
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: upload department' images
+      tags:
+      - Department
   /v1/departments/{page}/{limit}:
     get:
       consumes:
@@ -1072,6 +1101,35 @@ paths:
       security:
       - BearerAuth: []
       summary: update doctor
+      tags:
+      - Doctor
+  /v1/doctor/upload:
+    post:
+      consumes:
+      - image/png
+      description: upload doctors' files, cerfiticates
+      parameters:
+      - description: file
+        in: formData
+        name: file
+        required: true
+        type: file
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.Status'
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: upload doctors' files, cerfiticates
       tags:
       - Doctor
   /v1/doctor/verify/{email}/{code}:
