@@ -84,7 +84,7 @@ func (h *handlerV1) Register(c *gin.Context) {
 	}
 
 	userJson, err := json.Marshal(registerUser)
-	if handleInternalServerErrorWithMessage(c, h.log, err, "error while marshaling json") {
+	if handleInternalServerErrorWithMessage(c, h.log, err, "error while marshaling user json") {
 		return
 	}
 
@@ -219,7 +219,7 @@ func (h *handlerV1) Login(c *gin.Context) {
 
 	jspMarshal.UseProtoNames = true
 	err := c.ShouldBind(&body)
-	if handleBadRequestErrWithMessage(c, h.log, err, "error while marshaling request body") {
+	if handleBadRequestErrWithMessage(c, h.log, err, "error while marshaling user request body") {
 		return
 	}
 

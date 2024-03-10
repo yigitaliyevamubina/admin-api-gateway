@@ -207,7 +207,7 @@ func (h *handlerV1) DeleteDepartment(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, models.Status{Message: "deprtment was successfully deleted"})
+	c.JSON(http.StatusOK, models.Status{Message: "department was successfully deleted"})
 }
 
 // List departments

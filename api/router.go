@@ -108,18 +108,37 @@ func New(option Option) *gin.Engine {
 	api.POST("/user/refresh", handlerV1.UpdateRefreshToken)     //user
 
 	//Doctor
-	api.POST("/doctor/create", handlerV1.CreateDoctor)       //admin
-	api.GET("/doctor/:id", handlerV1.GetDoctorById)          //doctor
-	api.PUT("/doctor/update/:id", handlerV1.UpdateDoctor)    //doctor
-	api.DELETE("/doctor/delete/:id", handlerV1.DeleteDoctor) //doctor
-	api.GET("/doctors/:page/:limit", handlerV1.ListDoctors)  //user
+	api.POST("/doctor/register", handlerV1.RegisterDoctor)                               //unauthorized
+	api.GET("/doctor/verify/{email}/{code}", handlerV1.VerifyDoctor)                     //unauthorized
+	api.POST("/doctor/login", handlerV1.LoginDoctor)                                     //unauthorized
+	api.POST("/doctor/create", handlerV1.CreateDoctor)                                   //admin, superadmin
+	api.GET("/doctor/:id", handlerV1.GetDoctorById)                                      //doctor, user, operator, admin, superadmin
+	api.PUT("/doctor/update/:id", handlerV1.UpdateDoctor)                                //doctor, admin, superadmin
+	api.DELETE("/doctor/delete/:id", handlerV1.DeleteDoctor)                             //doctor, admin, superadmin
+	api.GET("/doctors/:page/:limit", handlerV1.ListDoctors)                              //user, doctor, operator, admin, superadmin
+	api.GET("/doctors/:page/:limit/:department_id", handlerV1.ListDoctorsByDepartmentId) //user, doctor, operator, admin, superadmin
 
 	//Department
-	api.POST("/department/create", handlerV1.CreateDepartment)       //admin
-	api.GET("/department/:id", handlerV1.GetDepartmentById)          //user
-	api.PUT("/department/update/:id", handlerV1.UpdateDepartment)    //admin
-	api.DELETE("/department/delete/:id", handlerV1.DeleteDepartment) //admin
-	api.GET("/departments/:page/:limit", handlerV1.ListDepartments)  //user
+	api.POST("/department/create", handlerV1.CreateDepartment)       //admin, superadmin
+	api.GET("/department/:id", handlerV1.GetDepartmentById)          //doctor, user, admin, operator, superadmin
+	api.PUT("/department/update/:id", handlerV1.UpdateDepartment)    //admin, superadmin
+	api.DELETE("/department/delete/:id", handlerV1.DeleteDepartment) //admin, superadmin
+	api.GET("/departments/:page/:limit", handlerV1.ListDepartments)  //user, doctor, operator, admin, superadmin
+
+	//Specialization
+	api.POST("/specialization/create", handlerV1.CreateSpecializaion)                                    //admin, superadmin
+	api.GET("/specialization/:id", handlerV1.GetSpecializationById)                                      //user, doctor, operator, admin, superadmin
+	api.PUT("/specialization/update/:id", handlerV1.UpdateSpecialization)                                //admin, superadmin
+	api.DELETE("/specialization/delete/:id", handlerV1.DeleteSpecialization)                             //admin, superadmin
+	api.GET("/specializations/:page/:limit", handlerV1.ListSpecializations)                              //user, doctor, operator, admin, superadmin
+	api.GET("/specializations/:page/:limit/:department_id", handlerV1.ListSpecializationsByDepartmentId) //user, doctor, operator, admin, superadmin
+
+	//Specialization price
+	api.POST("/specprice/create", handlerV1.CreateSpecPrice)       //admin, superadmin
+	api.GET("/specprice/:id", handlerV1.GetSpecPriceById)          //user, doctor, operator, admin, superadmin
+	api.PUT("/specprice/update/:id", handlerV1.UpdateSpecPrice)    //admin, superadmin
+	api.DELETE("/specprice/delete/:id", handlerV1.DeleteSpecPrice) //admin, superadmin
+	api.GET("/specprices/:page/:limit", handlerV1.ListSpecPrices)  //user, doctor, operator, admin, superadmin
 
 	url := ginSwagger.URL("swagger/doc.json")
 	api.GET("swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler, url))

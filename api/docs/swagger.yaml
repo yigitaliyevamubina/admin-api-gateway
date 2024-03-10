@@ -118,6 +118,8 @@ definitions:
         type: string
       id:
         type: string
+      is_verified:
+        type: boolean
       password:
         type: string
       phone_number:
@@ -194,6 +196,8 @@ definitions:
         type: string
       id:
         type: string
+      is_verified:
+        type: boolean
       password:
         type: string
       phone_number:
@@ -259,6 +263,33 @@ definitions:
           $ref: '#/definitions/models.Policy'
         type: array
     type: object
+  models.ListSpecPrices:
+    properties:
+      count:
+        type: integer
+      specialization_prices:
+        items:
+          $ref: '#/definitions/models.SpecPriceModel'
+        type: array
+    type: object
+  models.ListSpecializations:
+    properties:
+      count:
+        type: integer
+      specializations:
+        items:
+          $ref: '#/definitions/models.SpecializationModel'
+        type: array
+    type: object
+  models.ListSpecializationsWithPrices:
+    properties:
+      count:
+        type: integer
+      specializations:
+        items:
+          $ref: '#/definitions/models.SpecializaionWithPrice'
+        type: array
+    type: object
   models.ListUsersResp:
     properties:
       count:
@@ -274,6 +305,49 @@ definitions:
         type: string
       password:
         type: string
+    type: object
+  models.LoginRespDoctor:
+    properties:
+      access_token:
+        type: string
+      address:
+        type: string
+      biography:
+        type: string
+      birth_date:
+        type: string
+      created_at:
+        type: string
+      department_id:
+        type: integer
+      email:
+        type: string
+      end_work_year:
+        type: string
+      full_name:
+        type: string
+      gender:
+        type: string
+      id:
+        type: string
+      is_verified:
+        type: boolean
+      password:
+        type: string
+      phone_number:
+        type: string
+      salary:
+        type: number
+      spec_ids:
+        items:
+          type: integer
+        type: array
+      start_work_year:
+        type: string
+      updated_at:
+        type: string
+      work_years:
+        type: integer
     type: object
   models.LoginRespModel:
     properties:
@@ -301,6 +375,81 @@ definitions:
   models.RegisterRespModel:
     properties:
       message:
+        type: string
+    type: object
+  models.SpecPriceModel:
+    properties:
+      created_at:
+        type: string
+      doctor_id:
+        type: string
+      id:
+        type: integer
+      offline_price:
+        type: number
+      online_price:
+        type: number
+      specialization_id:
+        type: integer
+      updated_at:
+        type: string
+    type: object
+  models.SpecPriceReq:
+    properties:
+      doctor_id:
+        type: string
+      id:
+        type: integer
+      offline_price:
+        type: number
+      online_price:
+        type: number
+      specialization_id:
+        type: integer
+    type: object
+  models.SpecializaionWithPrice:
+    properties:
+      created_at:
+        type: string
+      department_id:
+        type: integer
+      description:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+      offline_price:
+        type: number
+      online_price:
+        type: number
+      updated_at:
+        type: string
+    type: object
+  models.SpecializationModel:
+    properties:
+      created_at:
+        type: string
+      department_id:
+        type: integer
+      description:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+      updated_at:
+        type: string
+    type: object
+  models.SpecializationReq:
+    properties:
+      department_id:
+        type: integer
+      description:
+        type: string
+      id:
+        type: integer
+      name:
         type: string
     type: object
   models.Status:
@@ -824,6 +973,64 @@ paths:
       summary: delete doctor
       tags:
       - Doctor
+  /v1/doctor/login:
+    post:
+      consumes:
+      - application/json
+      description: Login
+      parameters:
+      - description: Login
+        in: body
+        name: User
+        required: true
+        schema:
+          $ref: '#/definitions/models.LoginReqModel'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.LoginRespDoctor'
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+      summary: login doctor
+      tags:
+      - Doctor
+  /v1/doctor/register:
+    post:
+      consumes:
+      - application/json
+      description: Register a new doctor with the provided details
+      parameters:
+      - description: Register doctor
+        in: body
+        name: DoctorInfo
+        required: true
+        schema:
+          $ref: '#/definitions/models.DoctorReq'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.RegisterRespModel'
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      security:
+      - BearerAuth: []
+      summary: register doctor
+      tags:
+      - Doctor
   /v1/doctor/update/{id}:
     put:
       consumes:
@@ -860,6 +1067,34 @@ paths:
       summary: update doctor
       tags:
       - Doctor
+  /v1/doctor/verify/{email}/{code}:
+    get:
+      consumes:
+      - application/json
+      description: Verify a doctor with code sent to their email
+      parameters:
+      - description: email
+        in: path
+        name: email
+        required: true
+        type: string
+      - description: code
+        in: path
+        name: code
+        required: true
+        type: string
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.Status'
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+      summary: verify doctor
+      tags:
+      - Doctor
   /v1/doctors/{page}/{limit}:
     get:
       consumes:
@@ -892,6 +1127,45 @@ paths:
       security:
       - BearerAuth: []
       summary: get doctors' list
+      tags:
+      - Doctor
+  /v1/doctors/{page}/{limit}/{department_id}:
+    get:
+      consumes:
+      - application/json
+      description: get all doctors by department id
+      parameters:
+      - description: page
+        in: path
+        name: page
+        type: string
+      - description: limit
+        in: path
+        name: limit
+        type: string
+      - description: department_id
+        in: path
+        name: department_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.ListDoctors'
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      security:
+      - BearerAuth: []
+      summary: get doctors' list by department id
       tags:
       - Doctor
   /v1/login:
@@ -1087,6 +1361,373 @@ paths:
       summary: register user
       tags:
       - User
+  /v1/specialization/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Get specialization
+      parameters:
+      - description: id
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.SpecializationModel'
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      security:
+      - BearerAuth: []
+      summary: get specialization by id
+      tags:
+      - Specialization
+  /v1/specialization/create:
+    post:
+      consumes:
+      - application/json
+      description: Create a new specialization with the provided details
+      parameters:
+      - description: Create specialization
+        in: body
+        name: SpecializaionInfo
+        required: true
+        schema:
+          $ref: '#/definitions/models.SpecializationReq'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.SpecializationModel'
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      security:
+      - BearerAuth: []
+      summary: create specialization
+      tags:
+      - Specialization
+  /v1/specialization/delete/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete specialization
+      parameters:
+      - description: id
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.Status'
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      security:
+      - BearerAuth: []
+      summary: delete specialization
+      tags:
+      - Specialization
+  /v1/specialization/update/{id}:
+    put:
+      consumes:
+      - application/json
+      description: Update specialization
+      parameters:
+      - description: id
+        in: path
+        name: id
+        type: integer
+      - description: Update specialization
+        in: body
+        name: UserInfo
+        required: true
+        schema:
+          $ref: '#/definitions/models.SpecializationReq'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.SpecializationModel'
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      security:
+      - BearerAuth: []
+      summary: update specialization
+      tags:
+      - Specialization
+  /v1/specializations/{page}/{limit}:
+    get:
+      consumes:
+      - application/json
+      description: get all specializations
+      parameters:
+      - description: page
+        in: path
+        name: page
+        type: string
+      - description: limit
+        in: path
+        name: limit
+        type: string
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.ListSpecializations'
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      security:
+      - BearerAuth: []
+      summary: get specializations' list
+      tags:
+      - Specialization
+  /v1/specializations/{page}/{limit}/{department_id}:
+    get:
+      consumes:
+      - application/json
+      description: get all specializations by department id with prices
+      parameters:
+      - description: page
+        in: path
+        name: page
+        type: string
+      - description: limit
+        in: path
+        name: limit
+        type: string
+      - description: department_id
+        in: path
+        name: department_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.ListSpecializationsWithPrices'
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      security:
+      - BearerAuth: []
+      summary: get specializations' list by department id with prices
+      tags:
+      - Specialization
+  /v1/specprice/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Get Specialization price
+      parameters:
+      - description: id
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.SpecPriceModel'
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      security:
+      - BearerAuth: []
+      summary: get specialization price by id
+      tags:
+      - Specialization price
+  /v1/specprice/create:
+    post:
+      consumes:
+      - application/json
+      description: Create a new specialization price with the provided details
+      parameters:
+      - description: Create specialization price
+        in: body
+        name: SpecPriceInfo
+        required: true
+        schema:
+          $ref: '#/definitions/models.SpecPriceReq'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.SpecPriceModel'
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      security:
+      - BearerAuth: []
+      summary: create specialization price
+      tags:
+      - Specialization price
+  /v1/specprice/delete/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete specialization Price
+      parameters:
+      - description: id
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.Status'
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      security:
+      - BearerAuth: []
+      summary: delete specialization price
+      tags:
+      - Specialization price
+  /v1/specprice/update/{id}:
+    put:
+      consumes:
+      - application/json
+      description: Update specialization price
+      parameters:
+      - description: id
+        in: path
+        name: id
+        type: integer
+      - description: Update specialization price
+        in: body
+        name: UserInfo
+        required: true
+        schema:
+          $ref: '#/definitions/models.SpecPriceReq'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.SpecPriceModel'
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      security:
+      - BearerAuth: []
+      summary: update specialization Price
+      tags:
+      - Specialization price
+  /v1/specprices/{page}/{limit}:
+    get:
+      consumes:
+      - application/json
+      description: get all specialization prices
+      parameters:
+      - description: page
+        in: path
+        name: page
+        type: string
+      - description: limit
+        in: path
+        name: limit
+        type: string
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.ListSpecPrices'
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      security:
+      - BearerAuth: []
+      summary: get specialization prices' list
+      tags:
+      - Specialization price
   /v1/user/{id}:
     get:
       consumes:
